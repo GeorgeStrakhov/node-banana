@@ -213,7 +213,7 @@ export function FloatingNodeHeader({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="px-1 py-2 flex items-center gap-2 w-full">
+      <div className="px-1 py-2 flex items-center justify-between w-full">
         {/* Title Section */}
         <div className="flex-1 min-w-0 flex items-center gap-1.5 pl-2">
           {titlePrefix}
