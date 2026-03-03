@@ -120,13 +120,14 @@ export function OutputNode({ id, data, selected }: NodeProps<OutputNodeType>) {
           position={Position.Left}
           id="image"
           data-handletype="image"
+          style={{ zIndex: 10 }}
         />
         <Handle
           type="target"
           position={Position.Left}
           id="audio"
           data-handletype="audio"
-          style={{ top: "60%", background: "rgb(167, 139, 250)" }}
+          style={{ top: "60%", background: "rgb(167, 139, 250)", zIndex: 10 }}
         />
 
         {contentSrc ? (
