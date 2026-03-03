@@ -74,7 +74,7 @@ export function BaseNode({
       />
       <div
         className={`
-          h-full w-full flex flex-col overflow-clip
+          h-full w-full flex flex-col ${fullBleed ? "overflow-visible" : "overflow-clip"}
           ${fullBleed ? "rounded-lg" : "bg-neutral-800 rounded-lg shadow-lg border"}
           ${fullBleed ? "" : (isCurrentlyExecuting || isExecuting ? "border-blue-500 ring-1 ring-blue-500/20" : "border-neutral-700/60")}
           ${fullBleed ? "" : (hasError ? "border-red-500" : "")}
