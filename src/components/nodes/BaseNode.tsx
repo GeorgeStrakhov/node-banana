@@ -173,23 +173,28 @@ export function BaseNode({
       const thisNode = getNodes().find((n) => n.id === id);
       if (!thisNode) return;
 
+      const nodeHeight = getNodeDimension(thisNode, "height");
+      const contentHeight = nodeHeight - trackedSettingsHeight;
+
       const newSize = calculateAspectFitSize(
         dims.width / dims.height,
         getNodeDimension(thisNode, "width"),
-        getNodeDimension(thisNode, "height"),
+        contentHeight,
         fullBleed
       );
+
+      const finalHeight = newSize.height + trackedSettingsHeight;
 
       setNodes((nds) =>
         nds.map((n) => {
           if (n.id === id || (n.selected && n.id !== id)) {
-            return applyNodeDimensions(n, newSize.width, newSize.height);
+            return applyNodeDimensions(n, newSize.width, finalHeight);
           }
           return n;
         })
       );
     },
-    [aspectFitMedia, id, fullBleed, getNodes, setNodes]
+    [aspectFitMedia, id, fullBleed, getNodes, setNodes, trackedSettingsHeight]
   );
 
   const hasExpandedSettings = settingsExpanded && settingsPanel;
