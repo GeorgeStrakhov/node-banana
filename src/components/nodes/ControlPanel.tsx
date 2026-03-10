@@ -1062,6 +1062,8 @@ function EaseCurveControls({ node }: { node: Node }) {
 function ConditionalSwitchControls({ node }: { node: Node }) {
   const nodeData = node.data as ConditionalSwitchNodeData;
   const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
+  const regenerateNode = useWorkflowStore((state) => state.regenerateNode);
+  const isRunning = useWorkflowStore((state) => state.isRunning);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const handleRuleValueChange = useCallback(
@@ -1177,6 +1179,17 @@ function ConditionalSwitchControls({ node }: { node: Node }) {
       >
         + Add Rule
       </button>
+
+      <div className="flex justify-end">
+        <button
+          onClick={() => regenerateNode(node.id)}
+          disabled={isRunning}
+          className="nodrag nopan inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-neutral-700 hover:bg-neutral-600 border border-neutral-600 rounded text-neutral-300 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+        >
+          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          {isRunning ? "Running..." : "Run"}
+        </button>
+      </div>
     </div>
   );
 }
