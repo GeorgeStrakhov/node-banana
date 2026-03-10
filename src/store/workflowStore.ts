@@ -62,6 +62,7 @@ import {
 import { getConnectedInputsPure, validateWorkflowPure } from "./utils/connectedInputs";
 import { evaluateRule } from "./utils/ruleEvaluation";
 import { computeDimmedNodes } from "./utils/dimmingUtils";
+import { createThrottledRAF } from "@/utils/throttledRAF";
 import {
   executeAnnotation,
   executeArray,
@@ -382,9 +383,9 @@ let nodeIdCounter = 0;
 let groupIdCounter = 0;
 let autoSaveIntervalId: ReturnType<typeof setInterval> | null = null;
 
-// RAF debounce for hover updates — coalesces rapid mouseenter/mouseleave events
-// into a single store update per animation frame
-let hoverRafId: number | null = null;
+// Throttled RAF for hover updates — coalesces rapid mouseenter/mouseleave events
+// and caps at 60fps regardless of display refresh rate
+const hoverRAF = createThrottledRAF();
 
 // Track pending save-generation syncs to ensure IDs are resolved before workflow save
 const pendingImageSyncs = new Map<string, Promise<void>>();
@@ -530,9 +531,7 @@ const workflowStoreImpl: StateCreator<WorkflowStore> = (set, get) => ({
   },
 
   setHoveredNodeId: (id: string | null) => {
-    if (hoverRafId !== null) cancelAnimationFrame(hoverRafId);
-    hoverRafId = requestAnimationFrame(() => {
-      hoverRafId = null;
+    hoverRAF.schedule(() => {
       if (get().hoveredNodeId !== id) set({ hoveredNodeId: id });
     });
   },

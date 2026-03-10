@@ -7,6 +7,7 @@ import { NodeType, ProviderType } from "@/types";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { defaultNodeDimensions } from "@/store/utils/nodeDefaults";
 import { ProviderBadge } from "./ProviderBadge";
+import { createThrottledLoop } from "@/utils/throttledRAF";
 
 export interface CommentNavigationProps {
   currentIndex: number;
@@ -121,15 +122,11 @@ export const FloatingNodeHeader = memo(function FloatingNodeHeader({
 
     updatePosition();
 
-    let animationId: number;
-    const trackPosition = () => {
-      updatePosition();
-      animationId = requestAnimationFrame(trackPosition);
-    };
-    animationId = requestAnimationFrame(trackPosition);
+    const loop = createThrottledLoop(updatePosition);
+    loop.start();
 
     return () => {
-      cancelAnimationFrame(animationId);
+      loop.stop();
     };
   }, [showCommentTooltip, isCommentFocused]);
 

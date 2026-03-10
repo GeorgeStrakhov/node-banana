@@ -5,6 +5,7 @@ import { ProviderType, ModelInputDef } from "@/types";
 import { ModelParameter } from "@/lib/providers/types";
 import { useProviderApiKeys } from "@/store/workflowStore";
 import { deduplicatedFetch } from "@/utils/deduplicatedFetch";
+import { createThrottledRAF } from "@/utils/throttledRAF";
 
 // localStorage cache for model schemas (persists across dev server restarts)
 const SCHEMA_CACHE_KEY = "node-banana-schema-cache";
@@ -196,17 +197,16 @@ function ModelParametersInner({
   useEffect(() => {
     const el = gridRef.current;
     if (!el || !useGrid) { setColCount(1); return; }
-    let rafId: number;
+    const throttle = createThrottledRAF();
     const observer = new ResizeObserver(() => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
+      throttle.schedule(() => {
         const cols = getComputedStyle(el).gridTemplateColumns.split(" ").length;
         setColCount(prev => prev === cols ? prev : cols);
       });
     });
     observer.observe(el);
     return () => {
-      cancelAnimationFrame(rafId);
+      throttle.cancel();
       observer.disconnect();
     };
   }, [useGrid]);
