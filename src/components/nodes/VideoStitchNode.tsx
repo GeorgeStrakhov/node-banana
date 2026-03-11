@@ -7,6 +7,7 @@ import { useWorkflowStore } from "@/store/workflowStore";
 import { VideoStitchNodeData } from "@/types";
 import { checkEncoderSupport } from "@/hooks/useStitchVideos";
 import { useVideoBlobUrl } from "@/hooks/useVideoBlobUrl";
+import { useVideoAutoplay } from "@/hooks/useVideoAutoplay";
 
 type VideoStitchNodeType = Node<VideoStitchNodeData, "videoStitch">;
 
@@ -20,6 +21,7 @@ export function VideoStitchNode({ id, data, selected }: NodeProps<VideoStitchNod
   const isRunning = useWorkflowStore((state) => state.isRunning);
   const removeEdge = useWorkflowStore((state) => state.removeEdge);
   const videoBlobUrl = useVideoBlobUrl(nodeData.outputVideo ?? null);
+  const videoAutoplayRef = useVideoAutoplay(id, selected);
 
   // Check encoder support on mount
   useEffect(() => {
@@ -560,9 +562,9 @@ export function VideoStitchNode({ id, data, selected }: NodeProps<VideoStitchNod
         {nodeData.outputVideo && nodeData.status !== "loading" && (
           <div className="relative flex-1 min-h-0">
             <video
+              ref={videoAutoplayRef}
               src={videoBlobUrl ?? undefined}
               controls
-              autoPlay
               loop
               muted
               className="w-full h-full object-contain rounded"

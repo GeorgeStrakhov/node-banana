@@ -7,6 +7,7 @@ import { useWorkflowStore } from "@/store/workflowStore";
 import { EaseCurveNodeData } from "@/types";
 import { checkEncoderSupport } from "@/hooks/useStitchVideos";
 import { useVideoBlobUrl } from "@/hooks/useVideoBlobUrl";
+import { useVideoAutoplay } from "@/hooks/useVideoAutoplay";
 
 type EaseCurveNodeType = Node<EaseCurveNodeData, "easeCurve">;
 
@@ -19,6 +20,7 @@ export function EaseCurveNode({ id, data, selected }: NodeProps<EaseCurveNodeTyp
   const edges = useWorkflowStore((state) => state.edges);
   const removeEdge = useWorkflowStore((state) => state.removeEdge);
   const videoBlobUrl = useVideoBlobUrl(nodeData.outputVideo ?? null);
+  const videoAutoplayRef = useVideoAutoplay(id, selected);
 
   // Check encoder support on mount
   useEffect(() => {
@@ -182,9 +184,9 @@ export function EaseCurveNode({ id, data, selected }: NodeProps<EaseCurveNodeTyp
       {nodeData.outputVideo ? (
         <div className="relative w-full h-full">
           <video
+            ref={videoAutoplayRef}
             src={videoBlobUrl ?? undefined}
             controls
-            autoPlay
             loop
             muted
             className="absolute inset-0 w-full h-full object-contain rounded-lg"

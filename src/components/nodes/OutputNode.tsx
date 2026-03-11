@@ -7,6 +7,7 @@ import { useCommentNavigation } from "@/hooks/useCommentNavigation";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { OutputNodeData } from "@/types";
 import { useVideoBlobUrl } from "@/hooks/useVideoBlobUrl";
+import { useVideoAutoplay } from "@/hooks/useVideoAutoplay";
 
 type OutputNodeType = Node<OutputNodeData, "output">;
 
@@ -21,6 +22,7 @@ export function OutputNode({ id, data, selected }: NodeProps<OutputNodeType>) {
   const isRunning = useWorkflowStore((state) => state.isRunning);
   const [showLightbox, setShowLightbox] = useState(false);
   const previousEdgeCountRef = useRef<number | null>(null);
+  const videoAutoplayRef = useVideoAutoplay(id, selected);
 
   // Determine if content is audio
   const isAudio = useMemo(() => {
@@ -149,11 +151,11 @@ export function OutputNode({ id, data, selected }: NodeProps<OutputNodeType>) {
               >
                 {isVideo ? (
                   <video
+                    ref={videoAutoplayRef}
                     src={videoBlobUrl ?? undefined}
                     controls
                     loop
                     muted
-                    autoPlay
                     playsInline
                     className="w-full h-full object-cover"
                     onClick={(e) => e.stopPropagation()}

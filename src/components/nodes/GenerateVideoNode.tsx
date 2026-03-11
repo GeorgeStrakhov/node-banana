@@ -13,6 +13,7 @@ import { useToast } from "@/components/Toast";
 import { getVideoDimensions, calculateNodeSizePreservingHeight } from "@/utils/nodeDimensions";
 import { ProviderBadge } from "./ProviderBadge";
 import { useVideoBlobUrl } from "@/hooks/useVideoBlobUrl";
+import { useVideoAutoplay } from "@/hooks/useVideoAutoplay";
 import { getModelPageUrl, getProviderDisplayName } from "@/utils/providerUrls";
 import { useInlineParameters } from "@/hooks/useInlineParameters";
 import { InlineParameterPanel } from "./InlineParameterPanel";
@@ -54,6 +55,7 @@ export function GenerateVideoNode({ id, data, selected }: NodeProps<GenerateVide
   const [isBrowseDialogOpen, setIsBrowseDialogOpen] = useState(false);
   const [isLoadingCarouselVideo, setIsLoadingCarouselVideo] = useState(false);
   const videoBlobUrl = useVideoBlobUrl(nodeData.outputVideo ?? null);
+  const videoAutoplayRef = useVideoAutoplay(id, selected);
 
   // Inline parameters infrastructure
   const { inlineParametersEnabled } = useInlineParameters();
@@ -646,10 +648,10 @@ export function GenerateVideoNode({ id, data, selected }: NodeProps<GenerateVide
         {nodeData.outputVideo ? (
           <>
             <video
+              ref={videoAutoplayRef}
               key={nodeData.videoHistory?.[nodeData.selectedVideoHistoryIndex || 0]?.id}
               src={videoBlobUrl ?? undefined}
               controls
-              autoPlay
               loop
               muted
               className="w-full h-full object-cover"

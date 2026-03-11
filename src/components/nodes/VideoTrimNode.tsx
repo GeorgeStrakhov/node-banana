@@ -7,6 +7,7 @@ import { useWorkflowStore } from "@/store/workflowStore";
 import { VideoTrimNodeData } from "@/types";
 import { checkEncoderSupport } from "@/hooks/useStitchVideos";
 import { useVideoBlobUrl } from "@/hooks/useVideoBlobUrl";
+import { useVideoAutoplay } from "@/hooks/useVideoAutoplay";
 
 type VideoTrimNodeType = Node<VideoTrimNodeData, "videoTrim">;
 
@@ -29,6 +30,7 @@ export function VideoTrimNode({ id, data, selected }: NodeProps<VideoTrimNodeTyp
 
   // Track whether user wants to see source or output video
   const [showOutput, setShowOutput] = useState(false);
+  const videoAutoplayRef = useVideoAutoplay(id, selected);
 
   // Keep a ref to endTime so the metadata callback reads fresh state
   const endTimeRef = useRef(nodeData.endTime);
@@ -267,6 +269,7 @@ export function VideoTrimNode({ id, data, selected }: NodeProps<VideoTrimNodeTyp
         <div className="flex-1 min-h-0 relative">
           {previewUrl ? (
             <video
+              ref={videoAutoplayRef}
               key={previewUrl}
               src={previewBlobUrl ?? undefined}
               controls
