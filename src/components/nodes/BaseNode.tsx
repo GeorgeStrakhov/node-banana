@@ -3,6 +3,7 @@
 import { ReactNode, useCallback, useRef, useLayoutEffect } from "react";
 import { Node, NodeResizer, OnResize, useReactFlow } from "@xyflow/react";
 import { useWorkflowStore } from "@/store/workflowStore";
+import { isPanningRef } from "@/components/WorkflowCanvas";
 import { getMediaDimensions, calculateAspectFitSize } from "@/utils/nodeDimensions";
 
 const DEFAULT_NODE_DIMENSION = 300;
@@ -296,11 +297,11 @@ export function BaseNode({
           ${className}
         `}
         onMouseEnter={() => {
-          if (document.querySelector('.react-flow__pane.dragging')) return;
+          if (isPanningRef.current) return;
           setHoveredNodeId(id);
         }}
         onMouseLeave={() => {
-          if (document.querySelector('.react-flow__pane.dragging')) return;
+          if (isPanningRef.current) return;
           setHoveredNodeId(null);
         }}
       >

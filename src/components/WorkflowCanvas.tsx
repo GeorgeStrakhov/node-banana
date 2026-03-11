@@ -264,6 +264,9 @@ const findScrollableAncestor = (target: HTMLElement, deltaX: number, deltaY: num
   return null;
 };
 
+/** Shared ref so child components (BaseNode) can check panning state without re-rendering */
+export const isPanningRef = { current: false };
+
 export function WorkflowCanvas() {
   const { nodes, edges, groups, isModalOpen, showQuickstart, navigationTarget, canvasNavigationSettings, dimmedNodeIds } =
     useWorkflowStore(useShallow((state) => ({
@@ -294,6 +297,7 @@ export function WorkflowCanvas() {
   const setShortcutsDialogOpen = useWorkflowStore((state) => state.setShortcutsDialogOpen);
   const regenerateNode = useWorkflowStore((state) => state.regenerateNode);
   const clearWorkflow = useWorkflowStore((state) => state.clearWorkflow);
+  const setHoveredNodeId = useWorkflowStore((state) => state.setHoveredNodeId);
   const openAnnotationModal = useAnnotationStore((state) => state.openModal);
   const { screenToFlowPosition, getViewport, zoomIn, zoomOut, setViewport, setCenter } = useReactFlow();
   const { show: showToast } = useToast();
@@ -1953,6 +1957,8 @@ export function WorkflowCanvas() {
         onEdgesChange={onEdgesChange}
         onConnect={handleConnect}
         onConnectEnd={handleConnectEnd}
+        onMoveStart={() => { isPanningRef.current = true; setHoveredNodeId(null); }}
+        onMoveEnd={() => { isPanningRef.current = false; }}
         onNodeDragStop={handleNodeDragStop}
         onSelectionChange={handleSelectionChange}
         nodeTypes={nodeTypes}

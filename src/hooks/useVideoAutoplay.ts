@@ -22,9 +22,7 @@ export function useVideoAutoplay(
 ): React.RefObject<HTMLVideoElement | null> {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hoveredNodeId = useWorkflowStore((s) => s.hoveredNodeId);
-
-  const isHovered = hoveredNodeId === nodeId;
+  const isHovered = useWorkflowStore((s) => s.hoveredNodeId === nodeId);
 
   useEffect(() => {
     const video = videoRef.current;
